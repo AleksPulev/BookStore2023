@@ -2,6 +2,9 @@ using BookStore_C.BL.Interfaces;
 using BookStore_C.BL.Services;
 using BookStore_C.DL.Interfaces;
 using BookStore_C.DL.Repositories;
+using BookStore_C.HealthCheck;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace BookStore_C
 {
@@ -16,13 +19,25 @@ namespace BookStore_C
                 .AddSingleton<IAuthorRepository, AuthorRepository>();
             builder.Services
                 .AddSingleton<IAuthorService, AuthorService>();
-
+            builder.Services
+                .AddSingleton<IBookRepository, BookRepository>();
+            builder.Services
+                .AddSingleton<IBookService, BookService>();
+            builder.Services
+                .AddSingleton<ILibraryService, LibraryService>();
 
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining(typeof(Program));
+
+            builder.Services.AddHealthChecks()
+                .AddCheck<CustomHealthCheck>();
 
             var app = builder.Build();
 
@@ -37,6 +52,7 @@ namespace BookStore_C
 
             app.UseAuthorization();
 
+            app.MapHealthChecks("/healthz");
 
             app.MapControllers();
 

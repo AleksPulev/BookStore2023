@@ -1,8 +1,8 @@
 ﻿using BookStore_C.Models.Models;
 
-namespace BookStore_C.DL.Interfaces
+namespace BookStore_C.BL.Interfaces
 {
-    public interface IBookRepository
+    public interface IBookService
     {
         List<Book> GetAllBooksByAuthor(int authorId);
     }
